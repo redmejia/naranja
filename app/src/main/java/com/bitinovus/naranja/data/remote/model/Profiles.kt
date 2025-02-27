@@ -1,7 +1,7 @@
 package com.bitinovus.naranja.data.remote.model
 
 data class Profiles(
-    val data: List<Profile>,
+    val data: List<Profile> = emptyList(),
 )
 
 data class Profile(
