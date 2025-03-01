@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bitinovus.naranja.data.remote.api.OrangeAPI
 import com.bitinovus.naranja.data.remote.config.APIConfig
+import com.bitinovus.naranja.data.remote.model.Profile
 import com.bitinovus.naranja.data.remote.model.Profiles
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -30,6 +31,10 @@ class ProfileViewModel : ViewModel() {
                 Log.e("ERROR", "NET: ${e.message}")
             }
         }
+    }
+
+    fun delete(profile: Profile) {
+        _profileState.value = Profiles(_profileState.value.data - profile)
     }
 
 }
