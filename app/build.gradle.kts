@@ -40,6 +40,10 @@ android {
 }
 
 dependencies {
+
+    // Paging
+    implementation(libs.androidx.paging.runtime)
+
     // Retrofit and Gson
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
