@@ -15,10 +15,14 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
@@ -47,6 +51,19 @@ class MainActivity : ComponentActivity() {
 
                 val profileState by profileViewModel.profileState.collectAsState()
 
+                var count by remember { mutableIntStateOf(0) }
+
+                LaunchedEffect(Unit) {
+                    snapshotFlow { count }
+                        .collect { newCount ->
+                            if (newCount == 2) {
+                                profileViewModel.onRefresh()
+                                count = 0
+                            }
+                        }
+                }
+
+
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
                     Box(
@@ -59,6 +76,8 @@ class MainActivity : ComponentActivity() {
                         var offset = 0.dp
 
                         for (profile in profileState.data) {
+
+                            Log.d("PRO", "onCreate: $profile")
 
                             val screenHeight = LocalConfiguration.current.screenHeightDp.toFloat()
                             val scope = rememberCoroutineScope()
@@ -96,8 +115,8 @@ class MainActivity : ComponentActivity() {
                                                             "ACTION",
                                                             "onCreate: ADD"
                                                         )
-                                                        // TEST
-                                                        profileViewModel.delete(profile)
+                                                        count += 1
+
                                                     }
 
                                                     remove -> {
@@ -109,8 +128,7 @@ class MainActivity : ComponentActivity() {
                                                             "ACTION",
                                                             "onCreate: REMOVE"
                                                         )
-                                                        // TEST
-                                                        profileViewModel.delete(profile)
+                                                        count += 1
                                                     }
 
                                                     else -> {
@@ -127,6 +145,7 @@ class MainActivity : ComponentActivity() {
                                 StackImage(profile = profile)
                             }
                             offset += 25.dp / 2
+
                         }
                     }
                 }
